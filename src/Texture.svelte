@@ -1,4 +1,15 @@
 <script>
+  import { onMount } from "svelte";
+
+  // Public
+  export let texture;
+  export let lowDensity;
+  export let highDensity;
+
+  // Private
+  let points = [];
+  let canvas;
+
   class Radius {
     constructor(r) {
       this.r = r;
@@ -8,7 +19,7 @@
   }
 
   class PDD {
-    constructor(width, height, texture, lr, hr) {
+    constructor(width, height, texture, canvas, lr, hr) {
       // Dimensions of the distribution
       this.width = width;
       this.height = height;
@@ -33,11 +44,31 @@
       this.queue = [];
       this.queueSize = 0;
       this.sampleSize = 0;
+
+      this.canvas = canvas;
+      this.ctx = this.canvas.getContext("2d");
+
+      // Load the texture
+      let img = new Image();
+      this.load = new Promise((resolve, reject) => {
+        img.onload = () => {
+          this.ready = true;
+          this.ctx.drawImage(img, 0, 0);
+          this.img = this.ctx.getImageData(0, 0, 100, 100);
+          // console.log(this.img);
+          resolve();
+        };
+        img.onerror = () => {
+          reject();
+        };
+      });
+      img.src = texture;
     }
 
     next() {
+      if (!this.ready)
+        throw new Error("Cannot place points until the texture is loaded.");
       const { maxSamples, queue, width, height } = this;
-      const sr = this.hr; // TODO: this should be chosen based on the texture
 
       if (!this.sampleSize) {
         return this.sample(Math.random() * width, Math.random() * height);
@@ -47,13 +78,22 @@
         let i = Math.floor(Math.random() * this.queueSize);
         let s = queue[i];
 
+        // Get the color of the texture pixel proportionally under the target point
+        // Just the red channel, since the texture is black and white
+        let px = Math.floor((s[0] / width) * 100);
+        let py = Math.floor((s[1] / height) * 100);
+        let color = this.img.data[(py * 100 + px) * 4];
+
+        // Choose the stippling density based on the color
+        const sr = color === 255 ? this.lr : this.hr;
+
         for (let j = 0; j < maxSamples; ++j) {
           let a = 2 * Math.PI * Math.random();
           let r = Math.sqrt(Math.random() * sr.R + sr.r2);
           let x = s[0] + r * Math.cos(a);
           let y = s[1] + r * Math.sin(a);
 
-          if (0 <= x && x < width && 0 <= y && y < height && this.far(x, y))
+          if (0 <= x && x < width && 0 <= y && y < height && this.far(x, y, sr))
             return this.sample(x, y);
         }
 
@@ -62,9 +102,9 @@
       }
     }
 
-    far(x, y) {
+    far(x, y, sr) {
       const { cellSize, gridWidth, gridHeight, grid } = this;
-      const maxDist = this.hr.r2;
+      const maxDist = sr.r2;
 
       // Translate real coordinates to grid coordinates
       let i = Math.floor(x / this.cellSize);
@@ -110,24 +150,37 @@
     }
   }
 
-  const pdd = new PDD(900, 900, null, 40, 20);
+  onMount(() => {
+    console.log(texture, lowDensity, highDensity, canvas);
+    if (texture && lowDensity && highDensity && canvas) {
+      const pdd = new PDD(900, 900, texture, canvas, lowDensity, highDensity);
 
-  let points = [];
-
-  let p;
-  while ((p = pdd.next())) {
-    points.push(p);
-  }
+      pdd.load.then(() => {
+        console.log("promise resolved");
+        let p;
+        while ((p = pdd.next())) {
+          points.push(p);
+        }
+        points = points;
+      });
+    }
+  });
 </script>
 
 <style>
   svg circle {
     fill: #fff;
   }
+  canvas {
+    display: none;
+  }
 </style>
 
-<svg width="900" height="900" viewBox="0 0 900 900">
-  {#each points as [x, y]}
-    <circle cx={x} cy={y} r="1.5" />
-  {/each}
-</svg>
+<div>
+  <canvas bind:this={canvas} height={100} width={100} />
+  <svg width="900" height="900" viewBox="0 0 900 900">
+    {#each points as [x, y]}
+      <circle cx={x} cy={y} r="1.5" />
+    {/each}
+  </svg>
+</div>
