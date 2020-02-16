@@ -20,7 +20,7 @@
 <main>
   <div class="canvas">
     <Frame>
-      <Texture texture="texture.png" lowDensity={80} highDensity={10} />
+      <Texture texture="texture.png" lowDensity={30} highDensity={18} />
     </Frame>
   </div>
 </main>
