@@ -5,13 +5,22 @@
   export let y = 0;
   export let angle = 0;
 
+  const range = (min, max) => Math.random() * (max - min) + min;
+
   // Parameters
-  let length = 300;
-  let width = 50;
-  let center = 30;
-  let centerOffset = 20;
-  let offset = 0;
-  let bend = -20;
+
+  // How long, the thorn is, from point to base
+  let length = range(150, 350);
+  // How wide the base is
+  let width = range(length / 6, length / 4);
+  // How many pixels from center the center point of the base is
+  let center = range(-width / 4, 0);
+  // The delta-x of the center point of the base from the midpoint of the two curves
+  let centerOffset = range(10, 20);
+  // The delta-y of the base from the point of the thorn
+  let offset = range(0, 80);
+  // The delta-y of the control points of the curves, causing bend
+  let bend = Math.random() > 0.5 ? range(-100, -50) : range(50, 100);
 
   // Bindings
   let innerCurve;
@@ -32,7 +41,7 @@
     // Ordered strokes
     // Evenly space lines from the outer curve to the middle curve to
     // create an ordered hatching pattern.
-    for (let d = spacing; d < innerLength - spacing / 2; d += spacing) {
+    for (let d = spacing; d < outerLength - spacing / 2; d += spacing) {
       const p1 = outerCurve.getPointAtLength(d);
       const p2 = middleCurve.getPointAtLength((d / outerLength) * middleLength);
       orderedStrokes.push({
@@ -46,7 +55,7 @@
     // Erratic strokes
     // Similar to the ordered strokes, except there are twice as many lines
     // and the delta along the curves are jittered to create irregularity and overlap.
-    for (let d = spacing / 2; d < outerLength - spacing / 2; d += spacing / 2) {
+    for (let d = spacing / 2; d < innerLength - spacing / 2; d += spacing / 2) {
       const dr = d + Math.random() * (spacing * 2) - spacing;
       const dr2 = d + Math.random() * (spacing * 2) - spacing;
       const p1 = innerCurve.getPointAtLength(dr);
@@ -76,7 +85,7 @@
   }
 </style>
 
-<g class="thorn" transform="translate({x}, {y}) rotate({angle})">
+<g class="thorn" transform="translate({x}, {y}) rotate({angle}) scale(0.5)">
   <path
     bind:this={innerCurve}
     d="M 0 0 Q {length / 2}
@@ -94,11 +103,11 @@
     d="M 0 0 Q {(length + centerOffset) / 2}
     {(width / 2 - center) / 2 - offset + bend - width / 4}
     {length + centerOffset}
-    {width / 2 - center - offset}" />
+    {-center - offset}" />
   <path
     d="M {length}
     {-width / 2 - offset} L {length + centerOffset}
-    {width / 2 - center - offset} L {length}
+    {-center - offset} L {length}
     {width / 2 - offset}" />
   <g class="ordered-strokes">
     {#each orderedStrokes as s}
