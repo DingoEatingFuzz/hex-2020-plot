@@ -19,15 +19,6 @@
     "hexagon"
   ];
 
-  let geometries = {
-    triangleUp: '<path d="M15 1L28.8564 25H1.14359L15 1Z" />',
-    triangleDown: '<path d="M15 25L1.14359 0.999997L28.8564 1L15 25Z" />',
-    parallelogramLeft: '<path d="M1 1L23 7V27L1 22V1Z" />',
-    parallelogramRight: '<path d="M23 1L1 7V27L23 22V1Z" />',
-    circle: '<circle cx="14" cy="14" r="13" />',
-    hexagon: '<path d="M12 1L23.2583 7.5V20.5L12 27L0.74167 20.5V7.5L12 1Z" />'
-  };
-
   class Radius {
     constructor(r) {
       this.r = r;
@@ -175,7 +166,7 @@
   onMount(() => {
     console.log(texture, lowDensity, highDensity, canvas);
     if (texture && lowDensity && highDensity && canvas) {
-      const pdd = new PDD(900, 900, texture, canvas, lowDensity, highDensity);
+      const pdd = new PDD(860, 860, texture, canvas, lowDensity, highDensity);
 
       pdd.load.then(() => {
         console.log("promise resolved");
@@ -197,7 +188,7 @@
   .texture circle,
   .texture path {
     fill: transparent;
-    stroke: #233;
+    stroke: #455;
     stroke-width: 1;
   }
 
@@ -208,7 +199,6 @@
 
   .texture .trace {
     fill: pink;
-    fill: transparent;
     stroke: transparent;
   }
 
@@ -219,11 +209,16 @@
 
 <div>
   <canvas bind:this={canvas} height={100} width={100} />
-  <svg width="900" height="900" viewBox="0 0 900 900">
-    <g class="texture">
+  <svg
+    id="art"
+    title="hex-2020-plot"
+    width="900"
+    height="900"
+    viewBox="0 0 900 900">
+    <g class="texture" transform="translate(25, 25)">
       {#each points as p}
         <g transform="translate({p.x - 13}, {p.y - 13}) scale(0.5, 0.5)">
-          <circle class="trace" cx={13} cy={13} r="1.5" />
+          <!-- <circle class="trace" cx={13} cy={13} r="1.5" /> -->
           {#if p.shape == 'triangleUp'}
             <path d="M15 1L28.8564 25H1.14359L15 1Z" />
           {:else if p.shape == 'triangleDown'}
