@@ -1,6 +1,6 @@
 <script>
   import Frame from "./Frame.svelte";
-  import Texture from "./Texture.svelte";
+  import Plot from "./Plot.svelte";
   import SvgSaver from "svgsaver";
 
   let saver = new SvgSaver();
@@ -35,7 +35,7 @@
   <button class="download" on:click={saveSVG}>Download SVG</button>
   <div class="canvas">
     <Frame>
-      <Texture texture="texture.png" lowDensity={30} highDensity={18} />
+      <Plot />
     </Frame>
   </div>
 </main>
