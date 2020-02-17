@@ -3,7 +3,7 @@
 
   import Texture from "./Texture.svelte";
   import Border from "./Border.svelte";
-  import Thorn from "./Thorn.svelte";
+  import Centerpiece from "./Centerpiece.svelte";
 
   let canvas;
 
@@ -28,5 +28,6 @@
     viewBox="0 0 900 900">
     <Texture {canvas} texture="texture.png" lowDensity={30} highDensity={18} />
     <Border />
+    <Centerpiece count={7} width={900} height={900} />
   </svg>
 </div>
