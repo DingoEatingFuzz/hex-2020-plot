@@ -10,9 +10,9 @@
   // Parameters
 
   // How long, the thorn is, from point to base
-  let length = range(150, 350);
+  export let length = range(150, 350);
   // How wide the base is
-  let width = range(length / 6, length / 4);
+  let width = range(length / 5, length / 3);
   // How many pixels from center the center point of the base is
   let center = range(-width / 4, 0);
   // The delta-x of the center point of the base from the midpoint of the two curves
@@ -86,37 +86,39 @@
 </style>
 
 <g class="thorn" transform="translate({x}, {y}) rotate({angle}) scale(0.5)">
-  <path
-    bind:this={innerCurve}
-    d="M 0 0 Q {length / 2}
-    {-width / 4 - offset + bend - width / 2}
-    {length}
-    {-width / 2 - offset}" />
-  <path
-    bind:this={outerCurve}
-    d="M 0 0 Q {length / 2}
-    {width / 4 - offset + bend}
-    {length}
-    {width / 2 - offset}" />
-  <path
-    bind:this={middleCurve}
-    d="M 0 0 Q {(length + centerOffset) / 2}
-    {(width / 2 - center) / 2 - offset + bend - width / 4}
-    {length + centerOffset}
-    {-center - offset}" />
-  <path
-    d="M {length}
-    {-width / 2 - offset} L {length + centerOffset}
-    {-center - offset} L {length}
-    {width / 2 - offset}" />
-  <g class="ordered-strokes">
-    {#each orderedStrokes as s}
-      <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} />
-    {/each}
-  </g>
-  <g class="erratic-strokes">
-    {#each erraticStrokes as s}
-      <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} />
-    {/each}
+  <g transform="translate({-length / 2}, 0)">
+    <path
+      bind:this={innerCurve}
+      d="M 0 0 Q {length / 2}
+      {-width / 4 - offset + bend - width / 2}
+      {length}
+      {-width / 2 - offset}" />
+    <path
+      bind:this={outerCurve}
+      d="M 0 0 Q {length / 2}
+      {width / 4 - offset + bend}
+      {length}
+      {width / 2 - offset}" />
+    <path
+      bind:this={middleCurve}
+      d="M 0 0 Q {(length + centerOffset) / 2}
+      {(width / 2 - center) / 2 - offset + bend - width / 4}
+      {length + centerOffset}
+      {-center - offset}" />
+    <path
+      d="M {length}
+      {-width / 2 - offset} L {length + centerOffset}
+      {-center - offset} L {length}
+      {width / 2 - offset}" />
+    <g class="ordered-strokes">
+      {#each orderedStrokes as s}
+        <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} />
+      {/each}
+    </g>
+    <g class="erratic-strokes">
+      {#each erraticStrokes as s}
+        <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} />
+      {/each}
+    </g>
   </g>
 </g>
