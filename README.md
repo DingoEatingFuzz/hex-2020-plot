@@ -28,6 +28,8 @@ The arrangement of the thorns is determined by creating a force directed graph w
 
 The white-on-black design as well as the framing and labeling is a direct nod to the HEX plot for HEX^3. The number seven is also meaningful to the company.
 
+The shapes chosen in the background texture are representative of our products. The shapes in their stripped down form have been adopted by HashiCorp's Events team to create abstract patterns. They are normally paired with gradients to create moods or event-local identities, but gradients and plots don't go along well.
+
 ## Development
 
 ```bash
