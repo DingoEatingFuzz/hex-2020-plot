@@ -12,7 +12,7 @@ With that in mind, I drew inspiration from local artists and Native traditions.
 
 The background texture is plotted with a Sky colored Stardust Sakura Gelly Roll pen. This creates a subtle color on black with a shimmer.
 
-The design is inspired by Native basketry indigenous to the Southeast region, and the individual shapes pay homage to Native beadwork.
+The design is inspired by Native basketry from the Cherokee and Creek tribes, indigenous to the Southeast region of the United States. The individual shapes pay homage to Native beadwork.
 
 This pattern is implemented as a dual density Poisson disc distribution. The density for a point is determined by reading the proportional pixel value from static texture. White means low density and black means high density.
 
